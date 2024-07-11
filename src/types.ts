@@ -1,3 +1,4 @@
+import { DefaultComperators } from "./comperators"
 
 type MatchingResult<T extends {}> = {
 	field: keyof T
@@ -9,7 +10,6 @@ export type Comperator<T extends {}> = (field: keyof T, a: T, b: T) => MatchingR
 
 export type Comperators<T extends {}> = Record<keyof T, Comperator<T>>
 
-export type DefaultComperators = "NumericEquality" | "StringEquality" | "StringEqualityWithInclusionCloseness"
 
 export type BuiltInComperators<T extends {}> = Record<DefaultComperators, Comperator<T>>
 

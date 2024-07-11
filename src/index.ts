@@ -1,6 +1,6 @@
-import { builtInComperators } from "./comperators"
+import { DefaultComperators, builtInComperators } from "./comperators"
 import { isComperators, isUsageComperators } from "./typeGuards"
-import { BuiltInComperators, Comperator, Comperators, DefaultComperators, MatchingEngine, UsageComperators } from "./types"
+import { BuiltInComperators, Comperator, Comperators, MatchingEngine, UsageComperators } from "./types"
 
 
 function comperatorsFieldsExistsInObject<T extends {}>(object: T, comperators: Partial<Comperators<T>>): boolean {

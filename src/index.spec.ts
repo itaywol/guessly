@@ -27,8 +27,8 @@ test('NumericEquality comperator', async () => {
 
 	expect(await engine.match({ field: 2 })).toEqual([{ field: "field", match: true, closeness: 0 }])
 	expect(await engine.match({ field: 4 })).toEqual([{ field: "field", match: false, closeness: 2 }])
-	expect(await engine.match({ field: 0 })).toEqual([{ field: "field", match: false, closeness: 2 }])
-	expect(await engine.match({ field: -2 })).toEqual([{ field: "field", match: false, closeness: 4 }])
+	expect(await engine.match({ field: 0 })).toEqual([{ field: "field", match: false, closeness: -2 }])
+	expect(await engine.match({ field: -2 })).toEqual([{ field: "field", match: false, closeness: -4 }])
 })
 
 test('StringEquality comperator', async () => {
@@ -43,9 +43,9 @@ test('StringEquality and NumbericEquality comperators', async () => {
 
 	expect(await engine.match({ country: "netherlands", debutYear: 2012 })).toEqual([{ field: "country", match: true }, { field: "debutYear", match: true, closeness: 0 }])
 
-	expect(await engine.match({ country: "israel", debutYear: 2010 })).toEqual([{ field: "country", match: false }, { field: "debutYear", match: false, closeness: 2 }])
+	expect(await engine.match({ country: "israel", debutYear: 2010 })).toEqual([{ field: "country", match: false }, { field: "debutYear", match: false, closeness: -2 }])
 
-	expect(await engine.match({ country: "netherlands", debutYear: 2010 })).toEqual([{ field: "country", match: true }, { field: "debutYear", match: false, closeness: 2 }])
+	expect(await engine.match({ country: "netherlands", debutYear: 2010 })).toEqual([{ field: "country", match: true }, { field: "debutYear", match: false, closeness: -2 }])
 })
 
 test('StringEqualityWithInclusionCloseness comperator', async () => {
@@ -60,7 +60,7 @@ test('NumericEquality comperator with externally supplied comperator definition'
 	const engine = NewMatchingEngine<{year:number}>({goal:{year:2024},comperators:{year:builtInComperators["NumericEquality"]}})
 
 expect(await engine.match({ year: 2024 })).toEqual([{ field: "year", match: true, closeness: 0 }])
-expect(await engine.match({ year: 2022 })).toEqual([{ field: "year", match: false, closeness: 2 }])
+expect(await engine.match({ year: 2022 })).toEqual([{ field: "year", match: false, closeness: -2 }])
 })
 
 test('String Combinator Comperator',async()=>{
@@ -69,4 +69,40 @@ test('String Combinator Comperator',async()=>{
 	expect(await engine.match({ group: "asia",subgroup:"russia"})).toEqual([{ field: "subgroup", match: true, closeness: 2 }])
 	expect(await engine.match({ group: "asia",subgroup:"isreal"})).toEqual([{ field: "subgroup", match: false, closeness: 1 }])
 	expect(await engine.match({ group: "africa",subgroup:"egypt"})).toEqual([{ field: "subgroup", match: false, closeness: 0 }])
+})
+
+test("Spotle like test",async()=>{
+	const engine = NewMatchingEngine<{genre:string,continent:string,country:string,debut:number,gender:string,popularity:number,members:string}>(
+		{
+			goal:{
+				genre:"electronic",continent:"europe",country:"norway",debut:2016,gender:"male",popularity:84,members:"solo"
+			},
+			comperators:{
+				genre:builtInComperators["StringEquality"],
+				country:stringComperatorCombinatoricalCloseness("continent"),
+				debut:builtInComperators["NumericEquality"],
+				gender:builtInComperators["StringEquality"],
+				popularity:builtInComperators["NumericEquality"],
+				members:builtInComperators["StringEquality"]
+			}
+		}
+	)
+
+	expect(await engine.match({continent:"europe",country:"norway",genre:"electronic",debut:2016,gender:"male",popularity:84,members:"solo"})).toEqual([
+		{field:"genre",match:true},
+		{field:"country",match:true,closeness:2},
+		{field:"debut",match:true,closeness:0},
+		{field:"gender",match:true},
+		{field:"popularity",match:true,closeness:0},
+		{field:"members",match:true}
+	])
+
+	expect(await engine.match({continent:"europe",country:"belgium",genre:"electronic",debut:2016,gender:"male",popularity:170,members:"solo"})).toEqual([
+		{field:"genre",match:true},
+		{field:"country",match:false,closeness:1},
+		{field:"debut",match:true,closeness:0},
+		{field:"gender",match:true},
+		{field:"popularity",match:false,closeness:86},
+		{field:"members",match:true}
+	])
 })
