@@ -1,4 +1,5 @@
 import { expect, test } from "vitest"
+import { builtInComperators, stringComperatorCombinatoricalCloseness } from "./comperators"
 import { NewMatchingEngine } from "./index"
 
 test("Should throw on engine creation", async () => {
@@ -53,4 +54,19 @@ test('StringEqualityWithInclusionCloseness comperator', async () => {
 	expect(await engine.match({ field: "goat" })).toEqual([{ field: "field", match: true, closeness: 2 }])
 	expect(await engine.match({ field: "at" })).toEqual([{ field: "field", match: false, closeness: 1 }])
 	expect(await engine.match({ field: "ap" })).toEqual([{ field: "field", match: false, closeness: 0 }])
+})
+
+test('NumericEquality comperator with externally supplied comperator definition',async()=>{
+	const engine = NewMatchingEngine<{year:number}>({goal:{year:2024},comperators:{year:builtInComperators["NumericEquality"]}})
+
+expect(await engine.match({ year: 2024 })).toEqual([{ field: "year", match: true, closeness: 0 }])
+expect(await engine.match({ year: 2022 })).toEqual([{ field: "year", match: false, closeness: 2 }])
+})
+
+test('String Combinator Comperator',async()=>{
+	const engine = NewMatchingEngine<{group:string,subgroup:string}>({goal:{group:"asia",subgroup:"russia"},comperators:{subgroup:stringComperatorCombinatoricalCloseness("group")}})
+
+	expect(await engine.match({ group: "asia",subgroup:"russia"})).toEqual([{ field: "subgroup", match: true, closeness: 2 }])
+	expect(await engine.match({ group: "asia",subgroup:"isreal"})).toEqual([{ field: "subgroup", match: false, closeness: 1 }])
+	expect(await engine.match({ group: "africa",subgroup:"egypt"})).toEqual([{ field: "subgroup", match: false, closeness: 0 }])
 })
