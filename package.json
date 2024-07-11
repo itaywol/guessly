@@ -1,19 +1,33 @@
 {
-  "name": "somethingle-engine",
+  "name": "@itaywol/somethingle-engine",
   "version": "1.0.0",
   "description": "A wordle theme matching engine/framework",
   "main": "dist/index.js",
-  "files": [
-    "dist/*"
-  ],
+  "repository": {"url": "https://github.com/itaywol/somethingle-engine.git"},
+  "exports":{
+    "./*":{
+      "types":"./build/types/*.d.ts",
+      "require":"./build/cjs/*.js",
+      "import":"./build/esm/*.js",
+      "default":"./build/cjs/*.js"
+    }
+  },
+  "types": "./dist/types/*.d.ts",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "build:clean":"rm -rf ./dist",
+    "build:tsc":"tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
+    "build":"npm-run-all build:clean build:tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "npm-run-all": "^4.1.5",
     "typescript": "^5.5.3",
     "vitest": "^2.0.2"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }
