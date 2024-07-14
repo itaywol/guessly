@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A core library for guessing games",
   "main": "dist/index.js",
-  "repository": {"url": "https://github.com/itaywol/something-le-engine.git"},
+  "repository": {"url": "https://github.com/itaywol/guessly.git"},
   "exports":{
     "./*":{
       "types":"./build/types/*.d.ts",
