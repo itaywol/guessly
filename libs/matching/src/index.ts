@@ -2,6 +2,9 @@ import { DefaultComperators, builtInComperators } from "./comperators"
 import { isComperators, isUsageComperators } from "./typeGuards"
 import { BuiltInComperators, Comperator, Comperators, MatchingEngine, UsageComperators } from "./types"
 
+export { builtInComperators }
+export type { BuiltInComperators, Comperator, Comperators }
+
 
 function comperatorsFieldsExistsInObject<T extends {}>(object: T, comperators: Partial<Comperators<T>>): boolean {
 	const fieldsForTest = Object.keys(comperators)

@@ -1,6 +1,6 @@
 import { BuiltInComperators, Comperator } from "./types";
 
-export type DefaultComperators = "NumericEquality"|"NumericEqualityAbsCloseness" | "StringEquality" | "StringEqualityWithInclusionCloseness"
+export type DefaultComperators = "NumericEquality"|"NumericEqualityAbsCloseness" | "StringEquality" | "StringEqualityWithInclusionCloseness" | string
 
 export const builtInComperators: BuiltInComperators<any> = {
 	"NumericEqualityAbsCloseness": (f, a, b) => ({ field: f, match: a[f] === b[f], closeness: Math.abs(+a[f] - (+b[f])) }),
