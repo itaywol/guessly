@@ -1,7 +1,7 @@
 {
-  "name": "@itaywol/something-le-engine",
+  "name": "@itaywol/guessly-matching",
   "version": "1.0.0",
-  "description": "A wordle theme matching engine/framework",
+  "description": "A core library for guessing games",
   "main": "dist/index.js",
   "repository": {"url": "https://github.com/itaywol/something-le-engine.git"},
   "exports":{
